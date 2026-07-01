@@ -1,7 +1,6 @@
-import { calculateTotalInclusiveDays } from "../utils/billCalculator";
-
 type UtilityProps = {
-  utilityTitle: string;
+  utilityType: string;
+  totalUtilityDays: number;
   bill: string;
   setBill: (value: string) => void;
   startDate: string;
@@ -11,7 +10,8 @@ type UtilityProps = {
 };
 
 const Utility = ({
-  utilityTitle,
+  utilityType,
+  totalUtilityDays,
   bill,
   setBill,
   startDate,
@@ -19,8 +19,6 @@ const Utility = ({
   endDate,
   setEndDate,
 }: UtilityProps) => {
-  const totalDays = calculateTotalInclusiveDays(startDate, endDate) ?? 0;
-
   const handleStartChange = (
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
   ) => {
@@ -35,38 +33,39 @@ const Utility = ({
 
   return (
     <>
-      <h3>{utilityTitle}</h3>
-      <label>
-        {utilityTitle}:{" "}
-        <input
-          type="text"
-          name={`${utilityTitle}-bill`}
-          value={bill}
-          onChange={(e) => setBill(e.target.value)}
-        />
-      </label>
-      <br />
+      <h3>{utilityType}</h3>
+      <div>
+        <label>
+          {utilityType} total bill:{" "}
+          <input
+            type="text"
+            name={`${utilityType}-bill`}
+            value={bill}
+            onChange={(e) => setBill(e.target.value)}
+          />
+        </label>
+      </div>
       <div>
         <label>
           Period from:{" "}
           <input
             type="date"
-            name={`${utilityTitle}-start-date`}
+            name={`${utilityType}-start-date`}
             value={startDate}
             onChange={handleStartChange}
           />
-        </label>
+        </label>{" "}
         <label>
           Period to:{" "}
           <input
             type="date"
-            name={`${utilityTitle}-end-date`}
+            name={`${utilityType}-end-date`}
             value={endDate}
             onChange={handleEndChange}
           />
         </label>
       </div>
-      <p>Total days: {totalDays}</p>
+      <p>Total days: {totalUtilityDays}</p>
     </>
   );
 };

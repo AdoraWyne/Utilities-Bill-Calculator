@@ -1,0 +1,124 @@
+import { useState } from "react";
+import {
+  calculateTotalInclusiveDays,
+  calculateBillPerPersonDay,
+} from "../utils/billCalculator.ts";
+import Utility from "./Utility.tsx";
+import Housemate from "./Housemate";
+
+type ElectricityProps = {};
+
+type HousemateInput = {
+  name: string;
+  travelStartDate: string;
+  travelEndDate: string;
+};
+
+const Electricity = ({}: ElectricityProps) => {
+  const [elecStartDate, setElecStartDate] = useState<string>("");
+  const [elecEndDate, setElecEndDate] = useState<string>("");
+  const [elecBill, setElecBill] = useState<string>("");
+  const elecTotalDays =
+    calculateTotalInclusiveDays(elecStartDate, elecEndDate) ?? 0;
+
+  // ---- housemates -----
+  const [housemates, setHousemates] = useState<HousemateInput[]>([
+    {
+      name: "adora",
+      travelStartDate: "",
+      travelEndDate: "",
+    },
+    {
+      name: "rhea",
+      travelStartDate: "",
+      travelEndDate: "",
+    },
+    {
+      name: "hong",
+      travelStartDate: "",
+      travelEndDate: "",
+    },
+    {
+      name: "dan",
+      travelStartDate: "",
+      travelEndDate: "",
+    },
+  ]);
+
+  const updateHousemate = (
+    index: number,
+    field: "travelStartDate" | "travelEndDate",
+    value: string,
+  ) => {
+    setHousemates((prev) => {
+      return prev.map((h, i) => (i === index ? { ...h, [field]: value } : h));
+    });
+  };
+
+  const housematesInfoWithDays = housemates.map((h) => {
+    const totalTravelDays =
+      calculateTotalInclusiveDays(h.travelStartDate, h.travelEndDate) ?? 0;
+
+    return {
+      ...h,
+      totalTravelDays,
+      totalHomeDays: elecTotalDays - totalTravelDays,
+    };
+  });
+
+  const totalStayHomeDays = housematesInfoWithDays.reduce(
+    (acc, h) => acc + h.totalHomeDays,
+    0,
+  );
+
+  const billPerPersonDay = calculateBillPerPersonDay(
+    parseInt(elecBill),
+    totalStayHomeDays,
+  );
+
+  const housematesView = housematesInfoWithDays.map((h) => ({
+    ...h,
+    bill: billPerPersonDay * h.totalHomeDays,
+  }));
+
+  return (
+    <>
+      <h2>Category</h2>
+      <Utility
+        utilityType="Mics"
+        bill={elecBill}
+        setBill={setElecBill}
+        startDate={elecStartDate}
+        setStartDate={setElecStartDate}
+        endDate={elecEndDate}
+        setEndDate={setElecEndDate}
+        totalUtilityDays={elecTotalDays}
+      />
+
+      <hr />
+
+      <h2>Housemates</h2>
+      {housematesView.map((h, index) => (
+        <Housemate
+          key={h.name}
+          housemateName={h.name}
+          // utilityType="electricity"
+          travelStartDate={h.travelStartDate}
+          setTravelStartDate={(value) =>
+            updateHousemate(index, "travelStartDate", value)
+          }
+          travelEndDate={h.travelEndDate}
+          setTravelEndDate={(value) =>
+            updateHousemate(index, "travelEndDate", value)
+          }
+          totalTravelDays={h.totalTravelDays}
+          totalHomeDays={h.totalHomeDays}
+          bill={h.bill}
+        />
+      ))}
+      <hr />
+    </>
+  );
+};
+
+export default Electricity;
