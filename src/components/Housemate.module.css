@@ -1,0 +1,12 @@
+.travelDateContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: fit-content;
+}
+
+.travelHelperText {
+  font-size: 0.7rem;
+  font-style: italic;
+  margin: 0;
+}
