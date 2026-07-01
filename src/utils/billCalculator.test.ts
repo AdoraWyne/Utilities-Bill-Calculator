@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { calculateTotalInclusiveDays } from "./billCalculator.ts";
+import {
+  calculateTotalInclusiveDays,
+  calculateBillPerPersonDay,
+} from "./billCalculator.ts";
 
 describe("calculateTotalInclusiveDays", () => {
   it("counts both endpoints (inclusive)", () => {
@@ -30,5 +33,19 @@ describe("calculateTotalInclusiveDays", () => {
   // TODO: add validation so end date cannot be before start date.
   it("currently returns a negative count when end is before start", () => {
     expect(calculateTotalInclusiveDays("2026-06-10", "2026-06-05")).toBe(-4);
+  });
+});
+
+describe("calculateBillPerPersonDay", () => {
+  it("divides the bill by total person-days", () => {
+    expect(calculateBillPerPersonDay(100, 10)).toBe(10);
+  });
+
+  it("preserves cents in the bill amount", () => {
+    expect(calculateBillPerPersonDay(50.75, 10)).toBeCloseTo(5.075, 3);
+  });
+
+  it("handles non-terminating results", () => {
+    expect(calculateBillPerPersonDay(100, 3)).toBeCloseTo(33.33, 2);
   });
 });
