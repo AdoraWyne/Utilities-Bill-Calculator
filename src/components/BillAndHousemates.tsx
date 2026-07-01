@@ -5,6 +5,7 @@ import {
 } from "../utils/billCalculator.ts";
 import Utility from "./Utility.tsx";
 import Housemate from "./Housemate.tsx";
+import styles from "./BillAndHousemate.module.css";
 
 type HousemateInput = {
   name: string;
@@ -95,24 +96,25 @@ const BillAndHousemates = () => {
       <hr />
 
       <h2>Housemates</h2>
-      {housematesView.map((h, index) => (
-        <Housemate
-          key={h.name}
-          housemateName={h.name}
-          // utilityType="electricity"
-          travelStartDate={h.travelStartDate}
-          setTravelStartDate={(value) =>
-            updateHousemate(index, "travelStartDate", value)
-          }
-          travelEndDate={h.travelEndDate}
-          setTravelEndDate={(value) =>
-            updateHousemate(index, "travelEndDate", value)
-          }
-          totalTravelDays={h.totalTravelDays}
-          totalHomeDays={h.totalHomeDays}
-          bill={h.bill}
-        />
-      ))}
+      <div className={styles.housematesGrid}>
+        {housematesView.map((h, index) => (
+          <Housemate
+            key={h.name}
+            housemateName={h.name}
+            travelStartDate={h.travelStartDate}
+            setTravelStartDate={(value) =>
+              updateHousemate(index, "travelStartDate", value)
+            }
+            travelEndDate={h.travelEndDate}
+            setTravelEndDate={(value) =>
+              updateHousemate(index, "travelEndDate", value)
+            }
+            totalTravelDays={h.totalTravelDays}
+            totalHomeDays={h.totalHomeDays}
+            bill={h.bill}
+          />
+        ))}
+      </div>
     </>
   );
 };
