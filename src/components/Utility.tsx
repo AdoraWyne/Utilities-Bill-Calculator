@@ -1,5 +1,5 @@
 type UtilityProps = {
-  utilityType: string;
+  utilityType?: string;
   totalUtilityDays: number;
   bill: string;
   setBill: (value: string) => void;
@@ -10,7 +10,7 @@ type UtilityProps = {
 };
 
 const Utility = ({
-  utilityType,
+  utilityType = "",
   totalUtilityDays,
   bill,
   setBill,
@@ -31,15 +31,17 @@ const Utility = ({
     setEndDate(e.target.value);
   };
 
+  const namePrefix = utilityType ? `${utilityType}-` : "";
+
   return (
     <>
-      <h3>{utilityType}</h3>
+      <h3>{utilityType ? utilityType : "Utility Bill"}</h3>
       <div>
         <label>
-          {utilityType} total bill:{" "}
+          Total bill:{" "}
           <input
             type="text"
-            name={`${utilityType}-bill`}
+            name={`${namePrefix}total-bill`}
             value={bill}
             onChange={(e) => setBill(e.target.value)}
           />
@@ -50,7 +52,7 @@ const Utility = ({
           Period from:{" "}
           <input
             type="date"
-            name={`${utilityType}-start-date`}
+            name={`${namePrefix}start-date`}
             value={startDate}
             onChange={handleStartChange}
           />
@@ -59,7 +61,7 @@ const Utility = ({
           Period to:{" "}
           <input
             type="date"
-            name={`${utilityType}-end-date`}
+            name={`${namePrefix}end-date`}
             value={endDate}
             onChange={handleEndChange}
           />
