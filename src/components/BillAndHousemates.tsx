@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   calculateTotalInclusiveDays,
   calculateBillPerPersonDay,
+  calculateBillPerDay,
 } from "../utils/billCalculator.ts";
 import Utility from "./Utility.tsx";
 import Housemate from "./Housemate.tsx";
@@ -71,13 +72,13 @@ const BillAndHousemates = () => {
   );
 
   const billPerPersonDay = calculateBillPerPersonDay(
-    parseInt(elecBill),
+    Number(elecBill),
     totalStayHomeDays,
   );
 
   const housematesView = housematesInfoWithDays.map((h) => ({
     ...h,
-    bill: billPerPersonDay * h.totalHomeDays,
+    bill: calculateBillPerDay(billPerPersonDay, h.totalHomeDays),
   }));
 
   return (
