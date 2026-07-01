@@ -3,6 +3,7 @@ import {
   calculateTotalInclusiveDays,
   calculateBillPerPersonDay,
   calculateBillPerDay,
+  calculateEqualSplit,
 } from "../utils/billCalculator.ts";
 import Utility from "./Utility.tsx";
 import Housemate from "./Housemate.tsx";
@@ -71,14 +72,19 @@ const BillAndHousemates = () => {
     0,
   );
 
-  const billPerPersonDay = calculateBillPerPersonDay(
-    Number(elecBill),
-    totalStayHomeDays,
-  );
+  // When nobody is home during the bill period (0 total home-days), the per-day
+  // math would divide by zero and leave the bill unpaid. Split it equally instead.
+  const everyoneAway = totalStayHomeDays === 0;
+
+  const billPerPersonDay = everyoneAway
+    ? 0
+    : calculateBillPerPersonDay(Number(elecBill), totalStayHomeDays);
 
   const housematesView = housematesInfoWithDays.map((h) => ({
     ...h,
-    bill: calculateBillPerDay(billPerPersonDay, h.totalHomeDays),
+    bill: everyoneAway
+      ? calculateEqualSplit(Number(elecBill), housemates.length)
+      : calculateBillPerDay(billPerPersonDay, h.totalHomeDays),
   }));
 
   return (
