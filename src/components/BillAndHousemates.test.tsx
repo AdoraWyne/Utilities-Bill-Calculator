@@ -53,26 +53,17 @@ describe("BillAndHousemates (integration)", () => {
     setInput("end-date", "2026-06-10");
     setInput("total-bill", "100");
 
-    setInput("adora-travel-start-date", "2026-06-01");
-    setInput("adora-travel-end-date", "2026-06-10");
-    setInput("rhea-travel-start-date", "2026-06-01");
-    setInput("rhea-travel-end-date", "2026-06-10");
-    setInput("hong-travel-start-date", "2026-06-01");
-    setInput("hong-travel-end-date", "2026-06-10");
-    setInput("dan-travel-start-date", "2026-06-01");
-    setInput("dan-travel-end-date", "2026-06-10");
+    const housemates = ["adora", "rhea", "hong", "dan"];
 
-    expect(section("adora")).toHaveTextContent("Total travel days: 10");
-    expect(section("adora")).toHaveTextContent("Total home days: 0");
-    expect(section("adora")).toHaveTextContent("Total bill: $25.00");
-    expect(section("rhea")).toHaveTextContent("Total travel days: 10");
-    expect(section("rhea")).toHaveTextContent("Total home days: 0");
-    expect(section("rhea")).toHaveTextContent("Total bill: $25.00");
-    expect(section("hong")).toHaveTextContent("Total travel days: 10");
-    expect(section("hong")).toHaveTextContent("Total home days: 0");
-    expect(section("hong")).toHaveTextContent("Total bill: $25.00");
-    expect(section("dan")).toHaveTextContent("Total travel days: 10");
-    expect(section("dan")).toHaveTextContent("Total home days: 0");
-    expect(section("dan")).toHaveTextContent("Total bill: $25.00");
+    for (const name of housemates) {
+      setInput(`${name}-travel-start-date`, "2026-06-01");
+      setInput(`${name}-travel-end-date`, "2026-06-10");
+    }
+
+    for (const name of housemates) {
+      expect(section(name)).toHaveTextContent("Total travel days: 10");
+      expect(section(name)).toHaveTextContent("Total home days: 0");
+      expect(section(name)).toHaveTextContent("Total bill: $25.00");
+    }
   });
 });
