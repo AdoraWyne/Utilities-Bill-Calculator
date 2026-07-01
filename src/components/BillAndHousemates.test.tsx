@@ -1,6 +1,13 @@
 import { render, fireEvent, screen } from "@testing-library/react";
 import BillAndHousemates from "./BillAndHousemates.tsx";
 
+const setInput = (name: string, value: string) => {
+  return fireEvent.change(
+    document.querySelector(`input[name=${name}]`) as HTMLInputElement,
+    { target: { value } },
+  );
+};
+
 const section = (name: string) => {
   return screen.getByRole("heading", { name }).closest("div") as HTMLElement;
 };
@@ -10,34 +17,13 @@ describe("BillAndHousemates (integration)", () => {
     render(<BillAndHousemates />);
 
     // Electricity 1–10 Jun = 10 days, bill 100.
-    fireEvent.change(
-      document.querySelector(`input[name="start-date"]`) as HTMLInputElement,
-      { target: { value: "2026-06-01" } },
-    );
-    fireEvent.change(
-      document.querySelector(`input[name="end-date"]`) as HTMLInputElement,
-      { target: { value: "2026-06-10" } },
-    );
-    fireEvent.change(
-      document.querySelector(`input[name="total-bill"]`) as HTMLInputElement,
-      { target: { value: "100" } },
-    );
+    setInput("start-date", "2026-06-01");
+    setInput("end-date", "2026-06-10");
+    setInput("total-bill", "100");
 
     // adora is away for 5 days; the other 3 housemates are home all 10 days.
-    fireEvent.change(
-      document.querySelector(
-        `input[name="adora-travel-start-date"]`,
-      ) as HTMLInputElement,
-      { target: { value: "2026-06-01" } },
-    );
-    fireEvent.change(
-      document.querySelector(
-        `input[name="adora-travel-end-date"]`,
-      ) as HTMLInputElement,
-      {
-        target: { value: "2026-06-05" },
-      },
-    );
+    setInput("adora-travel-start-date", "2026-06-01");
+    setInput("adora-travel-end-date", "2026-06-05");
 
     expect(screen.getByText("Total days: 10")).toBeInTheDocument();
     expect(section("adora")).toHaveTextContent("Total travel days: 5");
