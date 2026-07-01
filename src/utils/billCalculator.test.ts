@@ -3,6 +3,7 @@ import {
   calculateTotalInclusiveDays,
   calculateBillPerPersonDay,
   calculateBillPerDay,
+  calculateEqualSplit,
 } from "./billCalculator.ts";
 
 describe("calculateTotalInclusiveDays", () => {
@@ -62,5 +63,15 @@ describe("calculateBillPerDay", () => {
 
   it("returns 0 when the housemate was never home", () => {
     expect(calculateBillPerDay(10, 0)).toBe(0);
+  });
+});
+
+describe("calculateEqualSplit", () => {
+  it("splits the bill equally across housemates", () => {
+    expect(calculateEqualSplit(100, 4)).toBe(25);
+  });
+
+  it("handles non-terminating results", () => {
+    expect(calculateEqualSplit(100, 3)).toBeCloseTo(33.33, 2);
   });
 });

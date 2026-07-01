@@ -24,3 +24,9 @@ export function calculateBillPerDay(
 ) {
   return billPerPersonDay * daysAtHome;
 }
+
+// Fallback for when nobody is home during the bill period (0 total home-days).
+// The bill still has to be paid, so split it equally across all housemates.
+export function calculateEqualSplit(totalBill: number, numHousemates: number) {
+  return totalBill / numHousemates;
+}
