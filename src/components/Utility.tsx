@@ -1,3 +1,5 @@
+import styles from "./Utility.module.css";
+
 type UtilityProps = {
   utilityType?: string;
   totalUtilityDays: number;
@@ -36,7 +38,7 @@ const Utility = ({
   return (
     <>
       <h3>{utilityType ? utilityType : "Utility Bill"}</h3>
-      <div>
+      <div className={styles.divContainer}>
         <label>
           Total bill:{" "}
           <input
@@ -47,7 +49,7 @@ const Utility = ({
           />
         </label>
       </div>
-      <div>
+      <div className={styles.divContainer}>
         <label>
           Period from:{" "}
           <input
@@ -67,7 +69,7 @@ const Utility = ({
           />
         </label>
       </div>
-      <p>Total days: {totalUtilityDays}</p>
+      <div className={styles.divContainer}>Total days: {totalUtilityDays}</div>
     </>
   );
 };

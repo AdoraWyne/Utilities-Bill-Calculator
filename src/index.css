@@ -50,3 +50,9 @@
     filter: invert(1) brightness(2);
   }
 }
+
+h1,
+h2,
+h3 {
+  color: var(--adora);
+}
