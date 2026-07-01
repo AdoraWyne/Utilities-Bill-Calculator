@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   calculateTotalInclusiveDays,
   calculateBillPerPersonDay,
+  calculateBillPerDay,
 } from "./billCalculator.ts";
 
 describe("calculateTotalInclusiveDays", () => {
@@ -47,5 +48,19 @@ describe("calculateBillPerPersonDay", () => {
 
   it("handles non-terminating results", () => {
     expect(calculateBillPerPersonDay(100, 3)).toBeCloseTo(33.33, 2);
+  });
+});
+
+describe("calculateBillPerDay", () => {
+  it("multiplies the per-person-day rate by days at home", () => {
+    expect(calculateBillPerDay(10, 5)).toBe(50);
+  });
+
+  it("preserves cents", () => {
+    expect(calculateBillPerDay(5.075, 10)).toBeCloseTo(50.75, 2);
+  });
+
+  it("returns 0 when the housemate was never home", () => {
+    expect(calculateBillPerDay(10, 0)).toBe(0);
   });
 });
