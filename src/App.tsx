@@ -1,10 +1,10 @@
 import "./App.css";
-import Electricity from "./components/Electricity.tsx";
+import BillAndHousemates from "./components/BillAndHousemates.tsx";
 
 function App() {
   return (
     <>
-      <Electricity />
+      <BillAndHousemates />
     </>
   );
 }

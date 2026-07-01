@@ -4,9 +4,7 @@ import {
   calculateBillPerPersonDay,
 } from "../utils/billCalculator.ts";
 import Utility from "./Utility.tsx";
-import Housemate from "./Housemate";
-
-type ElectricityProps = {};
+import Housemate from "./Housemate.tsx";
 
 type HousemateInput = {
   name: string;
@@ -14,7 +12,7 @@ type HousemateInput = {
   travelEndDate: string;
 };
 
-const Electricity = ({}: ElectricityProps) => {
+const BillAndHousemates = () => {
   const [elecStartDate, setElecStartDate] = useState<string>("");
   const [elecEndDate, setElecEndDate] = useState<string>("");
   const [elecBill, setElecBill] = useState<string>("");
@@ -85,7 +83,6 @@ const Electricity = ({}: ElectricityProps) => {
     <>
       <h2>Category</h2>
       <Utility
-        utilityType="Mics"
         bill={elecBill}
         setBill={setElecBill}
         startDate={elecStartDate}
@@ -116,9 +113,8 @@ const Electricity = ({}: ElectricityProps) => {
           bill={h.bill}
         />
       ))}
-      <hr />
     </>
   );
 };
 
-export default Electricity;
+export default BillAndHousemates;
