@@ -34,4 +34,15 @@ describe("BillAndHousemates (integration)", () => {
     expect(section("rhea")).toHaveTextContent("Total home days: 10");
     expect(section("rhea")).toHaveTextContent("Total bill: $28.57");
   });
+
+  it("keeps cents in the bill instead of truncating (Number, not parseInt)", () => {
+    render(<BillAndHousemates />);
+
+    setInput("start-date", "2026-06-01");
+    setInput("end-date", "2026-06-10");
+    setInput("total-bill", "50.40");
+
+    // assume all housemates stayed during the whole bill period
+    expect(section("adora")).toHaveTextContent("Total bill: $12.60");
+  });
 });
