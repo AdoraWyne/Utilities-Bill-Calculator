@@ -20,7 +20,19 @@ export type HousemateBillView = HousemateInput & {
   bill: number;
 };
 
-export function useUtilityBill(housemates: HousemateInput[]) {
+export type UtilityBill = {
+  bill: string;
+  setBill: (value: string) => void;
+  billStartDate: string;
+  setBillStartDate: (value: string) => void;
+  billEndDate: string;
+  setBillEndDate: (value: string) => void;
+  billTotalDays: number;
+  isPeriodValid: boolean;
+  housemates: HousemateBillView[];
+};
+
+export function useUtilityBill(housemates: HousemateInput[]): UtilityBill {
   const [billStartDate, setBillStartDate] = useState<string>("");
   const [billEndDate, setBillEndDate] = useState<string>("");
   const [bill, setBill] = useState<string>("");
