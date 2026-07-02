@@ -13,6 +13,64 @@ const section = (name: string) => {
 };
 
 describe("BillAndHousemates (integration)", () => {
+  const HOUSEMATES = ["adora", "rhea", "hong", "dan"];
+
+  describe("when the utility billing period is incomplete", () => {
+    it.each([
+      { scenario: "no bill entered", bill: "", expectedShare: "$0.00" },
+      { scenario: "bill entered", bill: "100", expectedShare: "$25.00" },
+    ])(
+      "shows 0 days and $expectedShare per housemate ($scenario)",
+      ({ bill, expectedShare }) => {
+        render(<BillAndHousemates />);
+
+        setInput("end-date", "2026-06-01"); // start-date left blank → period invalid
+        setInput("total-bill", bill);
+
+        expect(screen.getByText("Total days: 0")).toBeInTheDocument();
+
+        // housemates dates also left blank
+
+        for (const name of HOUSEMATES) {
+          expect(section(name)).toHaveTextContent("Total travel days: 0");
+          expect(section(name)).toHaveTextContent("Total home days: 0");
+          expect(section(name)).toHaveTextContent(
+            `Total bill: ${expectedShare}`,
+          );
+        }
+      },
+    );
+  });
+
+  describe("when the billing period is valid but a housemate's dates are incomplete", () => {
+    // Documents CURRENT behavior: a housemate who filled only one of their two
+    // dates gets 0 travel days (calculateTotalExclusiveDays returns null), so
+    // they're treated as home the whole period. Decide whether that's the
+    // intended product behavior or should be flagged/ignored.
+    it("treats a half-entered housemate as home for the whole period", () => {
+      render(<BillAndHousemates />);
+
+      // Electricity 1–10 Jun = 10 days, bill 100.
+      setInput("start-date", "2026-06-01");
+      setInput("end-date", "2026-06-10");
+      setInput("total-bill", "100");
+
+      // adora entered a leave date but forgot the arrive date.
+      setInput("adora-leave-home-date", "2026-06-03");
+      setInput("adora-arrive-home-date", "");
+
+      expect(screen.getByText("Total days: 10")).toBeInTheDocument();
+
+      // adora is (currently) counted as home all 10 days, same as everyone else,
+      // so the bill splits evenly: 100 / 4 = 25.
+      for (const name of HOUSEMATES) {
+        expect(section(name)).toHaveTextContent("Total travel days: 0");
+        expect(section(name)).toHaveTextContent("Total home days: 10");
+        expect(section(name)).toHaveTextContent("Total bill: $25.00");
+      }
+    });
+  });
+
   it("splits the bill by home-days when one housemate travels within utility billing period", () => {
     render(<BillAndHousemates />);
 
