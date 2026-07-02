@@ -64,6 +64,8 @@ const Utility = ({
   };
 
   const namePrefix = utilityType ? `${utilityType}-` : "";
+  const billErrorId = `${namePrefix}bill-input-error`;
+  const datesErrorId = `${namePrefix}bill-dates-error`;
 
   return (
     <>
@@ -76,10 +78,18 @@ const Utility = ({
             name={`${namePrefix}total-bill`}
             value={bill}
             onChange={handleBillChange}
+            aria-describedby={billErrorId}
+            aria-invalid={!!billErrorMsg}
           />
         </label>
         {billErrorMsg && (
-          <p style={{ color: "red", fontSize: "0.8rem" }}>{billErrorMsg}</p>
+          <p
+            id={billErrorId}
+            role="alert"
+            style={{ color: "red", fontSize: "0.8rem" }}
+          >
+            {billErrorMsg}
+          </p>
         )}
       </div>
       <div className={styles.divContainer}>
@@ -91,6 +101,8 @@ const Utility = ({
             value={startDate}
             onChange={handleStartChange}
             max={endDate}
+            aria-describedby={datesErrorId}
+            aria-invalid={!isPeriodValid && endDate !== "" && startDate !== ""}
           />
         </label>{" "}
         <label>
@@ -101,10 +113,16 @@ const Utility = ({
             value={endDate}
             onChange={handleEndChange}
             min={startDate}
+            aria-describedby={datesErrorId}
+            aria-invalid={!isPeriodValid && endDate !== "" && startDate !== ""}
           />
         </label>
         {!isPeriodValid && endDate !== "" && startDate !== "" && (
-          <p style={{ color: "red", fontSize: "0.8rem" }}>
+          <p
+            id={datesErrorId}
+            role="alert"
+            style={{ color: "red", fontSize: "0.8rem" }}
+          >
             End date must be on or after the start date.
           </p>
         )}
