@@ -13,7 +13,7 @@ const section = (name: string) => {
 };
 
 describe("BillAndHousemates (integration)", () => {
-  it("splits the bill by home-days when one housemate travels", () => {
+  it("splits the bill by home-days when one housemate travels within utility billing period", () => {
     render(<BillAndHousemates />);
 
     // Electricity 1–10 Jun = 10 days, bill 100.
@@ -22,8 +22,8 @@ describe("BillAndHousemates (integration)", () => {
     setInput("total-bill", "100");
 
     // adora is away for 5 days; the other 3 housemates are home all 10 days.
-    setInput("adora-travel-start-date", "2026-06-01");
-    setInput("adora-travel-end-date", "2026-06-05");
+    setInput("adora-leave-home-date", "2026-06-01");
+    setInput("adora-arrive-home-date", "2026-06-06");
 
     expect(screen.getByText("Total days: 10")).toBeInTheDocument();
     expect(section("adora")).toHaveTextContent("Total travel days: 5");
@@ -33,6 +33,69 @@ describe("BillAndHousemates (integration)", () => {
     expect(section("rhea")).toHaveTextContent("Total travel days: 0");
     expect(section("rhea")).toHaveTextContent("Total home days: 10");
     expect(section("rhea")).toHaveTextContent("Total bill: $28.57");
+  });
+
+  it("splits the bill by home-days when one housemate travels the whole utility billing period", () => {
+    render(<BillAndHousemates />);
+
+    // Electricity 1–10 Jun = 10 days, bill 100.
+    setInput("start-date", "2026-06-01");
+    setInput("end-date", "2026-06-10");
+    setInput("total-bill", "100");
+
+    setInput("adora-leave-home-date", "2026-06-01");
+    setInput("adora-arrive-home-date", "2026-07-06");
+
+    expect(screen.getByText("Total days: 10")).toBeInTheDocument();
+    expect(section("adora")).toHaveTextContent("Total travel days: 10");
+    expect(section("adora")).toHaveTextContent("Total home days: 0");
+    expect(section("adora")).toHaveTextContent("Total bill: $0.00");
+
+    expect(section("rhea")).toHaveTextContent("Total travel days: 0");
+    expect(section("rhea")).toHaveTextContent("Total home days: 10");
+    expect(section("rhea")).toHaveTextContent("Total bill: $33.33");
+  });
+
+  it("splits the bill by home-days when different stayed home date and different travel dates", () => {
+    render(<BillAndHousemates />);
+
+    // Electricity 1–10 Jun = 10 days, bill 100.
+    setInput("start-date", "2026-06-01");
+    setInput("end-date", "2026-06-10");
+    setInput("total-bill", "100");
+
+    // adora is away for 4 days
+    setInput("adora-leave-home-date", "2026-06-01");
+    setInput("adora-arrive-home-date", "2026-06-05");
+
+    // rhea stayed home for the whole utility period
+    setInput("rhea-leave-home-date", "");
+    setInput("rhea-arrive-home-date", "");
+
+    // hong away for the whole utility period
+    setInput("hong-leave-home-date", "2026-06-01");
+    setInput("hong-arrive-home-date", "2026-07-07");
+
+    // dan away for 8 days
+    setInput("dan-leave-home-date", "2026-06-01");
+    setInput("dan-arrive-home-date", "2026-06-09");
+
+    expect(screen.getByText("Total days: 10")).toBeInTheDocument();
+    expect(section("adora")).toHaveTextContent("Total travel days: 4");
+    expect(section("adora")).toHaveTextContent("Total home days: 6");
+    expect(section("adora")).toHaveTextContent("Total bill: $33.33");
+
+    expect(section("rhea")).toHaveTextContent("Total travel days: 0");
+    expect(section("rhea")).toHaveTextContent("Total home days: 10");
+    expect(section("rhea")).toHaveTextContent("Total bill: $55.56");
+
+    expect(section("hong")).toHaveTextContent("Total travel days: 10");
+    expect(section("hong")).toHaveTextContent("Total home days: 0");
+    expect(section("hong")).toHaveTextContent("Total bill: $0.00");
+
+    expect(section("dan")).toHaveTextContent("Total travel days: 8");
+    expect(section("dan")).toHaveTextContent("Total home days: 2");
+    expect(section("dan")).toHaveTextContent("Total bill: $11.11");
   });
 
   it("keeps cents in the bill instead of truncating (Number, not parseInt)", () => {
@@ -56,8 +119,8 @@ describe("BillAndHousemates (integration)", () => {
     const housemates = ["adora", "rhea", "hong", "dan"];
 
     for (const name of housemates) {
-      setInput(`${name}-travel-start-date`, "2026-06-01");
-      setInput(`${name}-travel-end-date`, "2026-06-10");
+      setInput(`${name}-leave-home-date`, "2026-06-01");
+      setInput(`${name}-arrive-home-date`, "2026-07-11");
     }
 
     for (const name of housemates) {
