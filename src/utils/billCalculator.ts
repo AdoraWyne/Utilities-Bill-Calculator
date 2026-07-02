@@ -22,6 +22,31 @@ export const calculateTotalExclusiveDays = (
   return null;
 };
 
+export const calculateMaxDate = (date1: string, date2: string) => {
+  if (date1 !== "" && date2 !== "") {
+    const comparisonIndex = Temporal.PlainDate.compare(date1, date2);
+    if (comparisonIndex < 0) {
+      return date2;
+    } else {
+      return date1;
+    }
+  }
+  return null;
+};
+
+export const calculateMinDate = (date1: string, date2: string) => {
+  if (date1 !== "" && date2 !== "") {
+    const comparisonIndex = Temporal.PlainDate.compare(date1, date2);
+    if (comparisonIndex > 0) {
+      return date2;
+    } else {
+      return date1;
+    }
+  }
+
+  return null;
+};
+
 export function calculateBillPerPersonDay(
   totalBill: number,
   totalPersonDays: number,

@@ -6,6 +6,8 @@ import {
   calculateBillPerPersonDay,
   calculateBillPerDay,
   calculateEqualSplit,
+  calculateMaxDate,
+  calculateMinDate,
 } from "./billCalculator.ts";
 
 describe("calculateTotalInclusiveDays", () => {
@@ -75,5 +77,41 @@ describe("calculateEqualSplit", () => {
 
   it("handles non-terminating results", () => {
     expect(calculateEqualSplit(100, 3)).toBeCloseTo(33.33, 2);
+  });
+});
+
+describe("calculateMaxDate", () => {
+  it("returns the second date when it is later", () => {
+    expect(calculateMaxDate("2026-06-01", "2026-06-10")).toBe("2026-06-10");
+  });
+
+  it("returns the first date when it is later", () => {
+    expect(calculateMaxDate("2026-06-10", "2026-06-01")).toBe("2026-06-10");
+  });
+
+  it("returns either date when both are the same day", () => {
+    expect(calculateMaxDate("2026-06-01", "2026-06-01")).toBe("2026-06-01");
+  });
+
+  it("returns null when a date is empty", () => {
+    expect(calculateMaxDate("", "2026-06-01")).toBeNull();
+  });
+});
+
+describe("calculateMinDate", () => {
+  it("returns the first date when it is earlier", () => {
+    expect(calculateMinDate("2026-06-01", "2026-06-10")).toBe("2026-06-01");
+  });
+
+  it("returns the second date when it is earlier", () => {
+    expect(calculateMinDate("2026-06-10", "2026-06-01")).toBe("2026-06-01");
+  });
+
+  it("returns either date when both are the same day", () => {
+    expect(calculateMinDate("2026-06-01", "2026-06-01")).toBe("2026-06-01");
+  });
+
+  it("returns null when a date is empty", () => {
+    expect(calculateMinDate("2026-06-01", "")).toBeNull();
   });
 });
