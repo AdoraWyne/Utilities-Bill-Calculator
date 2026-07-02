@@ -26,6 +26,13 @@ const Utility = ({
 }: UtilityProps) => {
   const [billErrorMsg, setBillErrorMsg] = useState<string>("");
 
+  const namePrefix = utilityType ? `${utilityType}-` : "";
+  const billErrorId = `${namePrefix}bill-input-error`;
+  const datesErrorId = `${namePrefix}bill-dates-error`;
+  const showBillErrorMsg = !!billErrorMsg;
+  const showDatesErrorMsg =
+    !isPeriodValid && endDate !== "" && startDate !== "";
+
   const handleBillChange = (
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
   ) => {
@@ -63,10 +70,6 @@ const Utility = ({
     setEndDate(e.target.value);
   };
 
-  const namePrefix = utilityType ? `${utilityType}-` : "";
-  const billErrorId = `${namePrefix}bill-input-error`;
-  const datesErrorId = `${namePrefix}bill-dates-error`;
-
   return (
     <>
       <h3>{utilityType ? utilityType : "Utility Bill"}</h3>
@@ -75,18 +78,19 @@ const Utility = ({
           Total bill:{" "}
           <input
             type="text"
+            inputMode="decimal"
             name={`${namePrefix}total-bill`}
             value={bill}
             onChange={handleBillChange}
-            aria-describedby={billErrorId}
-            aria-invalid={!!billErrorMsg}
+            aria-describedby={showBillErrorMsg ? billErrorId : undefined}
+            aria-invalid={showBillErrorMsg}
           />
         </label>
-        {billErrorMsg && (
+        {showBillErrorMsg && (
           <p
             id={billErrorId}
             role="alert"
-            style={{ color: "red", fontSize: "0.8rem" }}
+            style={{ color: "#d32f2f", fontSize: "0.8rem" }}
           >
             {billErrorMsg}
           </p>
@@ -101,8 +105,8 @@ const Utility = ({
             value={startDate}
             onChange={handleStartChange}
             max={endDate}
-            aria-describedby={datesErrorId}
-            aria-invalid={!isPeriodValid && endDate !== "" && startDate !== ""}
+            aria-describedby={showDatesErrorMsg ? datesErrorId : undefined}
+            aria-invalid={showDatesErrorMsg}
           />
         </label>{" "}
         <label>
@@ -113,15 +117,15 @@ const Utility = ({
             value={endDate}
             onChange={handleEndChange}
             min={startDate}
-            aria-describedby={datesErrorId}
-            aria-invalid={!isPeriodValid && endDate !== "" && startDate !== ""}
+            aria-describedby={showDatesErrorMsg ? datesErrorId : undefined}
+            aria-invalid={showDatesErrorMsg}
           />
         </label>
-        {!isPeriodValid && endDate !== "" && startDate !== "" && (
+        {showDatesErrorMsg && (
           <p
             id={datesErrorId}
             role="alert"
-            style={{ color: "red", fontSize: "0.8rem" }}
+            style={{ color: "#d32f2f", fontSize: "0.8rem" }}
           >
             End date must be on or after the start date.
           </p>
