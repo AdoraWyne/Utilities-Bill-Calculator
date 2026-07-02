@@ -43,6 +43,20 @@ describe("BillAndHousemates (integration)", () => {
     );
   });
 
+  // when the bill contains invalid characters
+  it("shows $0.00 (not NaN) when the bill contains invalid characters", () => {
+    render(<BillAndHousemates />);
+
+    setInput("start-date", "2026-06-01");
+    setInput("end-date", "2026-06-30");
+    setInput("total-bill", "abd"); // invalid → must not poison the math
+
+    for (const name of HOUSEMATES) {
+      expect(section(name)).toHaveTextContent("Total bill: $0.00");
+      expect(section(name)).not.toHaveTextContent("NaN");
+    }
+  });
+
   // when user input is invalid
   describe("when the billing period is valid but a housemate's dates are incomplete", () => {
     // Documents CURRENT behavior: a housemate who filled only one of their two
