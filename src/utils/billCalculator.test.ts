@@ -9,6 +9,7 @@ import {
   calculateMaxDate,
   calculateMinDate,
   calculateTravelDaysInBillingPeriod,
+  isValidPeriod,
 } from "./billCalculator.ts";
 
 describe("calculateTotalInclusiveDays", () => {
@@ -223,5 +224,34 @@ describe("calculateTravelDaysInBillingPeriod", () => {
         "2026-06-20",
       ),
     ).toBe(0);
+  });
+});
+
+describe("isValidPeriod", () => {
+  const TEST_CASES = [
+    {
+      startDate: "2026-06-01",
+      endDate: "2026-06-10",
+      result: true,
+    },
+    {
+      startDate: "2026-06-01",
+      endDate: "2026-06-01",
+      result: true,
+    },
+    {
+      startDate: "2026-06-10",
+      endDate: "2026-06-01",
+      result: false,
+    },
+    { startDate: "", endDate: "2026-06-10", result: false },
+    { startDate: "2026-06-01", endDate: "", result: false },
+    { startDate: "", endDate: "", result: false },
+  ];
+
+  TEST_CASES.forEach(({ startDate, endDate, result }) => {
+    it(`return ${result} when start date is ${startDate} and end date is ${endDate}`, () => {
+      expect(isValidPeriod(startDate, endDate)).toBe(result);
+    });
   });
 });

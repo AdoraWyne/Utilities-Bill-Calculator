@@ -104,3 +104,11 @@ export function calculateBillPerDay(
 export function calculateEqualSplit(totalBill: number, numHousemates: number) {
   return totalBill / numHousemates;
 }
+
+export function isValidPeriod(startDate: string, endDate: string) {
+  if (startDate === "" || endDate === "") return false;
+
+  if (Temporal.PlainDate.compare(startDate, endDate) > 0) return false;
+
+  return true;
+}

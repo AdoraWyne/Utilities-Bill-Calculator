@@ -5,6 +5,7 @@ import {
   calculateBillPerPersonDay,
   calculateBillPerDay,
   calculateEqualSplit,
+  isValidPeriod,
 } from "../utils/billCalculator.ts";
 import Utility from "./Utility.tsx";
 import Housemate from "./Housemate.tsx";
@@ -20,8 +21,12 @@ const BillAndHousemates = () => {
   const [elecStartDate, setElecStartDate] = useState<string>("");
   const [elecEndDate, setElecEndDate] = useState<string>("");
   const [elecBill, setElecBill] = useState<string>("");
-  const elecTotalDays =
-    calculateTotalInclusiveDays(elecStartDate, elecEndDate) ?? 0;
+
+  const isPeriodValid = isValidPeriod(elecStartDate, elecEndDate);
+
+  const elecTotalDays = isPeriodValid
+    ? (calculateTotalInclusiveDays(elecStartDate, elecEndDate) ?? 0)
+    : 0;
 
   // ---- housemates -----
   const [housemates, setHousemates] = useState<HousemateInput[]>([
@@ -103,6 +108,7 @@ const BillAndHousemates = () => {
         endDate={elecEndDate}
         setEndDate={setElecEndDate}
         totalUtilityDays={elecTotalDays}
+        isPeriodValid={isPeriodValid}
       />
 
       <hr />

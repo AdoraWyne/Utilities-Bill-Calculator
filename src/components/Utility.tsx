@@ -10,6 +10,7 @@ type UtilityProps = {
   setStartDate: (value: string) => void;
   endDate: string;
   setEndDate: (value: string) => void;
+  isPeriodValid: boolean;
 };
 
 const Utility = ({
@@ -21,6 +22,7 @@ const Utility = ({
   setStartDate,
   endDate,
   setEndDate,
+  isPeriodValid,
 }: UtilityProps) => {
   const [billErrorMsg, setBillErrorMsg] = useState<string>("");
 
@@ -89,6 +91,7 @@ const Utility = ({
             name={`${namePrefix}start-date`}
             value={startDate}
             onChange={handleStartChange}
+            max={endDate}
           />
         </label>{" "}
         <label>
@@ -98,8 +101,14 @@ const Utility = ({
             name={`${namePrefix}end-date`}
             value={endDate}
             onChange={handleEndChange}
+            min={startDate}
           />
         </label>
+        {!isPeriodValid && endDate !== "" && startDate !== "" && (
+          <p style={{ color: "red", fontSize: "0.8rem" }}>
+            End date must be on or after the start date.
+          </p>
+        )}
       </div>
       <div className={styles.divContainer}>Total days: {totalUtilityDays}</div>
     </>
