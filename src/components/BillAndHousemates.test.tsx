@@ -43,20 +43,6 @@ describe("BillAndHousemates (integration)", () => {
     );
   });
 
-  // when the bill contains invalid characters
-  it("shows $0.00 (not NaN) when the bill contains invalid characters", () => {
-    render(<BillAndHousemates />);
-
-    setInput("start-date", "2026-06-01");
-    setInput("end-date", "2026-06-30");
-    setInput("total-bill", "abd"); // invalid → must not poison the math
-
-    for (const name of HOUSEMATES) {
-      expect(section(name)).toHaveTextContent("Total bill: $0.00");
-      expect(section(name)).not.toHaveTextContent("NaN");
-    }
-  });
-
   // when user input is invalid
   describe("when the billing period is valid but a housemate's dates are incomplete", () => {
     // Documents CURRENT behavior: a housemate who filled only one of their two
@@ -108,18 +94,6 @@ describe("BillAndHousemates (integration)", () => {
     expect(section("rhea")).toHaveTextContent("Total travel days: 0");
     expect(section("rhea")).toHaveTextContent("Total home days: 10");
     expect(section("rhea")).toHaveTextContent("Total bill: $28.57");
-  });
-
-  // test return bill amount format
-  it("keeps cents in the bill instead of truncating (Number, not parseInt)", () => {
-    render(<BillAndHousemates />);
-
-    setInput("start-date", "2026-06-01");
-    setInput("end-date", "2026-06-10");
-    setInput("total-bill", "50.40");
-
-    // assume all housemates stayed during the whole bill period
-    expect(section("adora")).toHaveTextContent("Total bill: $12.60");
   });
 
   // when everyone is away the whole billing period
@@ -246,6 +220,34 @@ describe("BillAndHousemates (integration)", () => {
       expect(section("rhea")).toHaveTextContent("Total travel days: 0");
       expect(section("rhea")).toHaveTextContent("Total home days: 28");
       expect(section("rhea")).toHaveTextContent("Total bill: $32.56");
+    });
+  });
+
+  describe("when interpreting the bill amount and format", () => {
+    // invalid path: bad input must not poison the math
+    it("shows $0.00 (not NaN) when the bill contains invalid characters", () => {
+      render(<BillAndHousemates />);
+
+      setInput("start-date", "2026-06-01");
+      setInput("end-date", "2026-06-30");
+      setInput("total-bill", "abd"); // invalid → must not poison the math
+
+      for (const name of HOUSEMATES) {
+        expect(section(name)).toHaveTextContent("Total bill: $0.00");
+        expect(section(name)).not.toHaveTextContent("NaN");
+      }
+    });
+
+    // valid-precision path: decimals must survive (Number, not parseInt)
+    it("keeps cents in the bill instead of truncating (Number, not parseInt)", () => {
+      render(<BillAndHousemates />);
+
+      setInput("start-date", "2026-06-01");
+      setInput("end-date", "2026-06-10");
+      setInput("total-bill", "50.40");
+
+      // assume all housemates stayed during the whole bill period
+      expect(section("adora")).toHaveTextContent("Total bill: $12.60");
     });
   });
 });
