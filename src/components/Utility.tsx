@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styles from "./Utility.module.css";
 
 type UtilityProps = {
@@ -21,6 +22,33 @@ const Utility = ({
   endDate,
   setEndDate,
 }: UtilityProps) => {
+  const [billErrorMsg, setBillErrorMsg] = useState<string>("");
+
+  const handleBillChange = (
+    e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
+  ) => {
+    const value = e.target.value;
+
+    if (value === "") {
+      setBillErrorMsg("");
+      setBill(value);
+      return;
+    }
+
+    // ^\d+       one or more digits (the integer part, required)
+    // (\.\d+)?   optionally a dot followed by one or more digits
+    // ^...$      anchors so the WHOLE string must match, nothing else allowed
+    const isValidNumber = /^\d+(\.\d+)?$/.test(value);
+
+    if (!isValidNumber) {
+      setBillErrorMsg("Only number is allowed.");
+      setBill(value);
+    } else {
+      setBillErrorMsg("");
+      setBill(value);
+    }
+  };
+
   const handleStartChange = (
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
   ) => {
@@ -45,9 +73,13 @@ const Utility = ({
             type="text"
             name={`${namePrefix}total-bill`}
             value={bill}
-            onChange={(e) => setBill(e.target.value)}
+            onChange={handleBillChange}
+            // onChange={(e) => setBill(e.target.value)}
           />
         </label>
+        {billErrorMsg && (
+          <p style={{ color: "red", fontSize: "0.8rem" }}>{billErrorMsg}</p>
+        )}
       </div>
       <div className={styles.divContainer}>
         <label>
