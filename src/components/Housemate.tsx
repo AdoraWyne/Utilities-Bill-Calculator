@@ -3,10 +3,10 @@ import styles from "./Housemate.module.css";
 type HousemateProps = {
   housemateName: string;
   utilityType?: string;
-  travelStartDate: string;
-  setTravelStartDate: (value: string) => void;
-  travelEndDate: string;
-  setTravelEndDate: (value: string) => void;
+  leaveHomeDate: string;
+  setLeaveHomeDate: (value: string) => void;
+  arriveHomeDate: string;
+  setArriveHomeDate: (value: string) => void;
   totalTravelDays: number;
   totalHomeDays: number;
   bill: number;
@@ -15,10 +15,10 @@ type HousemateProps = {
 const Housemate = ({
   housemateName,
   utilityType = "",
-  travelStartDate,
-  setTravelStartDate,
-  travelEndDate,
-  setTravelEndDate,
+  leaveHomeDate,
+  setLeaveHomeDate,
+  arriveHomeDate,
+  setArriveHomeDate,
   totalTravelDays,
   totalHomeDays,
   bill,
@@ -29,45 +29,45 @@ const Housemate = ({
       <div className={styles.travelDateContainer}>
         <div>
           <label>
-            Travel from:{" "}
+            Date when leave home:{" "}
             <input
               type="date"
-              name={`${housemateName}-travel-start-date`}
-              value={travelStartDate}
-              onChange={(e) => setTravelStartDate(e.target.value)}
-              aria-describedby={`${housemateName}-travel-start-hint`}
+              name={`${housemateName}-leave-home-date`}
+              value={leaveHomeDate}
+              onChange={(e) => setLeaveHomeDate(e.target.value)}
+              aria-describedby={`${housemateName}-leave-home-hint`}
             />
           </label>{" "}
           <p
-            id={`${housemateName}-travel-start-hint`}
+            id={`${housemateName}-leave-home-hint`}
             className={styles.travelHelperText}
           >
-            The first day starts counting absent.
+            Date leaving house for travel.
           </p>
         </div>
         <div>
           <label>
-            Travel to:{" "}
+            Date when arrive home:{" "}
             <input
               type="date"
-              name={`${housemateName}-travel-end-date`}
-              value={travelEndDate}
-              onChange={(e) => setTravelEndDate(e.target.value)}
-              aria-describedby={`${housemateName}-travel-end-hint`}
+              name={`${housemateName}-arrive-home-date`}
+              value={arriveHomeDate}
+              onChange={(e) => setArriveHomeDate(e.target.value)}
+              aria-describedby={`${housemateName}-arrive-home-hint`}
             />
           </label>
           <p
-            id={`${housemateName}-travel-end-hint`}
+            id={`${housemateName}-arrive-home-hint`}
             className={styles.travelHelperText}
           >
-            The last day starts counting absent.
+            Date arrive/back home from travel.
           </p>
         </div>
       </div>
       <p>Total travel days: {totalTravelDays ? totalTravelDays : 0}</p>
       <p>Total home days: {totalHomeDays} </p>
       <p>
-        Total {utilityType} bill: ${bill ? bill.toFixed(2) : "-"}
+        Total {utilityType} bill: ${bill.toFixed(2)}
       </p>
 
       <hr />

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   calculateTotalInclusiveDays,
+  calculateTravelDaysInBillingPeriod,
   calculateBillPerPersonDay,
   calculateBillPerDay,
   calculateEqualSplit,
@@ -11,8 +12,8 @@ import styles from "./BillAndHousemate.module.css";
 
 type HousemateInput = {
   name: string;
-  travelStartDate: string;
-  travelEndDate: string;
+  leaveHomeDate: string;
+  arriveHomeDate: string;
 };
 
 const BillAndHousemates = () => {
@@ -26,29 +27,29 @@ const BillAndHousemates = () => {
   const [housemates, setHousemates] = useState<HousemateInput[]>([
     {
       name: "adora",
-      travelStartDate: "",
-      travelEndDate: "",
+      leaveHomeDate: "",
+      arriveHomeDate: "",
     },
     {
       name: "rhea",
-      travelStartDate: "",
-      travelEndDate: "",
+      leaveHomeDate: "",
+      arriveHomeDate: "",
     },
     {
       name: "hong",
-      travelStartDate: "",
-      travelEndDate: "",
+      leaveHomeDate: "",
+      arriveHomeDate: "",
     },
     {
       name: "dan",
-      travelStartDate: "",
-      travelEndDate: "",
+      leaveHomeDate: "",
+      arriveHomeDate: "",
     },
   ]);
 
   const updateHousemate = (
     index: number,
-    field: "travelStartDate" | "travelEndDate",
+    field: "leaveHomeDate" | "arriveHomeDate",
     value: string,
   ) => {
     setHousemates((prev) => {
@@ -57,9 +58,12 @@ const BillAndHousemates = () => {
   };
 
   const housematesInfoWithDays = housemates.map((h) => {
-    const totalTravelDays =
-      calculateTotalInclusiveDays(h.travelStartDate, h.travelEndDate) ?? 0;
-
+    const totalTravelDays = calculateTravelDaysInBillingPeriod(
+      h.leaveHomeDate,
+      h.arriveHomeDate,
+      elecStartDate,
+      elecEndDate,
+    );
     return {
       ...h,
       totalTravelDays,
@@ -108,13 +112,13 @@ const BillAndHousemates = () => {
           <Housemate
             key={h.name}
             housemateName={h.name}
-            travelStartDate={h.travelStartDate}
-            setTravelStartDate={(value) =>
-              updateHousemate(index, "travelStartDate", value)
+            leaveHomeDate={h.leaveHomeDate}
+            setLeaveHomeDate={(value) =>
+              updateHousemate(index, "leaveHomeDate", value)
             }
-            travelEndDate={h.travelEndDate}
-            setTravelEndDate={(value) =>
-              updateHousemate(index, "travelEndDate", value)
+            arriveHomeDate={h.arriveHomeDate}
+            setArriveHomeDate={(value) =>
+              updateHousemate(index, "arriveHomeDate", value)
             }
             totalTravelDays={h.totalTravelDays}
             totalHomeDays={h.totalHomeDays}
