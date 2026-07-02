@@ -79,15 +79,16 @@ const BillAndHousemates = () => {
   // When nobody is home during the bill period (0 total home-days), the per-day
   // math would divide by zero and leave the bill unpaid. Split it equally instead.
   const everyoneAway = totalStayHomeDays === 0;
+  const billAmount = Number.isFinite(Number(elecBill)) ? Number(elecBill) : 0;
 
   const billPerPersonDay = everyoneAway
     ? 0
-    : calculateBillPerPersonDay(Number(elecBill), totalStayHomeDays);
+    : calculateBillPerPersonDay(billAmount, totalStayHomeDays);
 
   const housematesView = housematesInfoWithDays.map((h) => ({
     ...h,
     bill: everyoneAway
-      ? calculateEqualSplit(Number(elecBill), housemates.length)
+      ? calculateEqualSplit(billAmount, housemates.length)
       : calculateBillPerDay(billPerPersonDay, h.totalHomeDays),
   }));
 
