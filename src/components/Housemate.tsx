@@ -3,10 +3,10 @@ import styles from "./Housemate.module.css";
 type HousemateProps = {
   housemateName: string;
   utilityType?: string;
-  travelStartDate: string;
-  setTravelStartDate: (value: string) => void;
-  travelEndDate: string;
-  setTravelEndDate: (value: string) => void;
+  leaveHomeDate: string;
+  setLeaveHomeDate: (value: string) => void;
+  arriveHomeDate: string;
+  setArriveHomeDate: (value: string) => void;
   totalTravelDays: number;
   totalHomeDays: number;
   bill: number;
@@ -15,10 +15,10 @@ type HousemateProps = {
 const Housemate = ({
   housemateName,
   utilityType = "",
-  travelStartDate,
-  setTravelStartDate,
-  travelEndDate,
-  setTravelEndDate,
+  leaveHomeDate,
+  setLeaveHomeDate,
+  arriveHomeDate,
+  setArriveHomeDate,
   totalTravelDays,
   totalHomeDays,
   bill,
@@ -33,8 +33,8 @@ const Housemate = ({
             <input
               type="date"
               name={`${housemateName}-leave-home-date`}
-              value={travelStartDate}
-              onChange={(e) => setTravelStartDate(e.target.value)}
+              value={leaveHomeDate}
+              onChange={(e) => setLeaveHomeDate(e.target.value)}
               aria-describedby={`${housemateName}-leave-home-hint`}
             />
           </label>{" "}
@@ -51,8 +51,8 @@ const Housemate = ({
             <input
               type="date"
               name={`${housemateName}-arrive-home-date`}
-              value={travelEndDate}
-              onChange={(e) => setTravelEndDate(e.target.value)}
+              value={arriveHomeDate}
+              onChange={(e) => setArriveHomeDate(e.target.value)}
               aria-describedby={`${housemateName}-arrive-home-hint`}
             />
           </label>
