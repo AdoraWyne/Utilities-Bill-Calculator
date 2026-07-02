@@ -76,7 +76,6 @@ const Utility = ({
             name={`${namePrefix}total-bill`}
             value={bill}
             onChange={handleBillChange}
-            // onChange={(e) => setBill(e.target.value)}
           />
         </label>
         {billErrorMsg && (
