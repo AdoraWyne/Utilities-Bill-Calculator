@@ -11,6 +11,17 @@ export const calculateTotalInclusiveDays = (
   return null;
 };
 
+export const calculateTotalExclusiveDays = (
+  startDate: string,
+  endDate: string,
+): number | null => {
+  if (startDate !== "" && endDate !== "") {
+    // dates inclusive
+    return Temporal.PlainDate.from(startDate).until(endDate).days;
+  }
+  return null;
+};
+
 export function calculateBillPerPersonDay(
   totalBill: number,
   totalPersonDays: number,
