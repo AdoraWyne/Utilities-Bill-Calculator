@@ -8,6 +8,7 @@ import {
   calculateEqualSplit,
   calculateMaxDate,
   calculateMinDate,
+  calculateTravelDaysInBillingPeriod,
 } from "./billCalculator.ts";
 
 describe("calculateTotalInclusiveDays", () => {
@@ -113,5 +114,114 @@ describe("calculateMinDate", () => {
 
   it("returns null when a date is empty", () => {
     expect(calculateMinDate("2026-06-01", "")).toBeNull();
+  });
+});
+
+describe("calculateTravelDaysInBillingPeriod", () => {
+  it("counts travel days when the trip falls entirely inside the bill period", () => {
+    // bill Jun 1-10, away Jun 1-6 (present from the 6th) => 5 travel days
+    expect(
+      calculateTravelDaysInBillingPeriod(
+        "2026-06-01",
+        "2026-06-06",
+        "2026-06-01",
+        "2026-06-10",
+      ),
+    ).toBe(5);
+  });
+
+  it("clamps the leave side when the housemate left before the bill started", () => {
+    // bill Jun 8 - Jul 5, away since Jun 1, back Jun 10.
+    // Only the 8th and 9th fall inside the period => 2 travel days.
+    expect(
+      calculateTravelDaysInBillingPeriod(
+        "2026-06-01",
+        "2026-06-10",
+        "2026-06-08",
+        "2026-07-05",
+      ),
+    ).toBe(2);
+  });
+
+  it("clamps the arrive side when the housemate returns after the bill ended", () => {
+    // bill Jun 1-10, away the whole period and beyond => all 10 days count.
+    expect(
+      calculateTravelDaysInBillingPeriod(
+        "2026-06-01",
+        "2026-07-06",
+        "2026-06-01",
+        "2026-06-10",
+      ),
+    ).toBe(10);
+  });
+
+  it("treats the arrive day as a present (paying) day", () => {
+    // bill Jun 1-10, arrive on the 10th => away Jun 1-9 (9 days), present the 10th.
+    expect(
+      calculateTravelDaysInBillingPeriod(
+        "2026-06-01",
+        "2026-06-10",
+        "2026-06-01",
+        "2026-06-10",
+      ),
+    ).toBe(9);
+  });
+
+  it("counts the final billed day when arriving the day after the bill ends", () => {
+    // bill Jun 1-10, arrive Jun 11 => all 10 days are travel days.
+    expect(
+      calculateTravelDaysInBillingPeriod(
+        "2026-06-01",
+        "2026-06-11",
+        "2026-06-01",
+        "2026-06-10",
+      ),
+    ).toBe(10);
+  });
+
+  it("returns 0 when no travel dates are entered", () => {
+    expect(
+      calculateTravelDaysInBillingPeriod("", "", "2026-06-01", "2026-06-10"),
+    ).toBe(0);
+  });
+
+  it("returns 0 when no bill period is entered", () => {
+    expect(
+      calculateTravelDaysInBillingPeriod("2026-06-01", "2026-06-06", "", ""),
+    ).toBe(0);
+  });
+
+  it("returns 0 when the trip is entirely before the bill period", () => {
+    expect(
+      calculateTravelDaysInBillingPeriod(
+        "2026-05-01",
+        "2026-05-10",
+        "2026-06-01",
+        "2026-06-10",
+      ),
+    ).toBe(0);
+  });
+
+  it("returns 0 when the trip is entirely after the bill period", () => {
+    expect(
+      calculateTravelDaysInBillingPeriod(
+        "2026-07-01",
+        "2026-07-10",
+        "2026-06-01",
+        "2026-06-10",
+      ),
+    ).toBe(0);
+  });
+
+  it("returns 0 for reversed travel dates (arrive before leave)", () => {
+    // Clamp-only behavior: invalid input resolves safely to 0, no error.
+    expect(
+      calculateTravelDaysInBillingPeriod(
+        "2026-06-10",
+        "2026-06-05",
+        "2026-06-01",
+        "2026-06-20",
+      ),
+    ).toBe(0);
   });
 });

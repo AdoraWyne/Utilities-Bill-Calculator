@@ -47,6 +47,44 @@ export const calculateMinDate = (date1: string, date2: string) => {
   return null;
 };
 
+export function calculateTravelDaysInBillingPeriod(
+  leaveHomeDate: string,
+  arriveHomeDate: string,
+  utilityBillStartDate: string,
+  utilityBillEndDate: string,
+): number {
+  if (
+    leaveHomeDate === "" ||
+    arriveHomeDate === "" ||
+    utilityBillStartDate === "" ||
+    utilityBillEndDate === ""
+  ) {
+    return 0;
+  }
+
+  // When someone returns after the bill ends, we want to cap their travel at the bill's last day
+  // without this, when someone returns after the bill ends, we will take the bill end date as the arrive date, but the housemate is not here!
+  // +1 to bill end date, to make sure housemate is counted as absent
+  const dayAfterBillEnd = Temporal.PlainDate.from(utilityBillEndDate)
+    .add({ days: 1 })
+    .toString();
+
+  const effectiveLeaveDate = calculateMaxDate(
+    leaveHomeDate,
+    utilityBillStartDate,
+  );
+  const effectiveArriveDate = calculateMinDate(arriveHomeDate, dayAfterBillEnd);
+
+  if (effectiveLeaveDate === null || effectiveArriveDate === null) {
+    return 0;
+  }
+
+  const travelDays =
+    calculateTotalExclusiveDays(effectiveLeaveDate, effectiveArriveDate) ?? 0;
+
+  return Math.max(0, travelDays);
+}
+
 export function calculateBillPerPersonDay(
   totalBill: number,
   totalPersonDays: number,
