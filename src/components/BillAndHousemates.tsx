@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   calculateTotalInclusiveDays,
-  calculateTotalExclusiveDays,
+  calculateTravelDaysInBillingPeriod,
   calculateBillPerPersonDay,
   calculateBillPerDay,
   calculateEqualSplit,
@@ -58,11 +58,12 @@ const BillAndHousemates = () => {
   };
 
   const housematesInfoWithDays = housemates.map((h) => {
-    const totalTravelDays =
-      (calculateTotalExclusiveDays(h.leaveHomeDate, h.arriveHomeDate) ?? 0) >
-      elecTotalDays
-        ? elecTotalDays
-        : (calculateTotalExclusiveDays(h.leaveHomeDate, h.arriveHomeDate) ?? 0);
+    const totalTravelDays = calculateTravelDaysInBillingPeriod(
+      h.leaveHomeDate,
+      h.arriveHomeDate,
+      elecStartDate,
+      elecEndDate,
+    );
     return {
       ...h,
       totalTravelDays,
