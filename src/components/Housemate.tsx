@@ -24,7 +24,7 @@ const Housemate = ({
   bill,
 }: HousemateProps) => {
   return (
-    <div>
+    <div className={styles.housemateCard}>
       <h3>{housemateName}</h3>
       <div className={styles.travelDateContainer}>
         <div>
@@ -69,8 +69,6 @@ const Housemate = ({
       <p>
         Total {utilityType} bill: ${bill.toFixed(2)}
       </p>
-
-      <hr />
     </div>
   );
 };

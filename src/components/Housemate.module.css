@@ -10,3 +10,8 @@
   font-style: italic;
   margin: 0;
 }
+
+.housemateCard {
+  border-bottom: 1px solid rgb(128, 128, 128);
+  padding-bottom: 1rem;
+}
